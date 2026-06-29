@@ -18,13 +18,11 @@ public class ControladorRecomendacion {
     @Autowired
     private ServicioRecomendacion servicioRecomendacion;
 
-
     @GetMapping("/fiscales")
     public List<RecomendacionDTO> listarRecomendacionesFiscales() {
         return servicioRecomendacion.listarRecomendacionesFiscales();
     }
 
-    
     @GetMapping("/inversion")
     public List<RecomendacionDTO> listarRecursosInversion() {
         return servicioRecomendacion.listarRecursosInversion();

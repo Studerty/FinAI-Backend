@@ -60,7 +60,7 @@ public class FiltroJwt extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-           
+            // Error de token expirado o inválido
         }
 
         filterChain.doFilter(request, response);

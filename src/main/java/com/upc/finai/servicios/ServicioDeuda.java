@@ -17,7 +17,7 @@ public class ServicioDeuda {
     @Autowired private DeudaRepositorio deudaRepositorio;
     @Autowired private UsuarioRepositorio usuarioRepositorio;
 
-   
+    // MÉTODO 1: Para registrarDeuda
     @Transactional
     public Deuda registrarDeuda(DeudaDTO dto, String correoUsuario) {
         Usuario usuario = usuarioRepositorio.findByCorreo(correoUsuario)
@@ -33,14 +33,14 @@ public class ServicioDeuda {
         return deudaRepositorio.save(deuda);
     }
 
-  
+    // MÉTODO 2: Para listarDeudas (Asegúrate que el nombre sea exacto)
     public List<Deuda> listarDeudas(String correoUsuario) {
         Usuario usuario = usuarioRepositorio.findByCorreo(correoUsuario)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         return deudaRepositorio.findByUsuarioId(usuario.getId());
     }
 
-   
+    // MÉTODO 3: Para la calculadora/salud crediticia
     public Map<String, Object> obtenerSaludCrediticia(String correoUsuario) {
         Usuario usuario = usuarioRepositorio.findByCorreo(correoUsuario).orElseThrow();
         List<Deuda> deudas = deudaRepositorio.findByUsuarioId(usuario.getId());

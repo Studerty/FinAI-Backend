@@ -8,10 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RespuestaAutenticacionDTO {
+
     private String token;
+    private Long idUsuario;
+    private String rol;
     private String mensaje;
 
-    public RespuestaAutenticacionDTO(String token) {
-        this.token = token;
-    }
 }

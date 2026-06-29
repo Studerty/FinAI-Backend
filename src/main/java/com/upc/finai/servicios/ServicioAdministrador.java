@@ -22,15 +22,20 @@ public class ServicioAdministrador {
 
     @Autowired
     private UsuarioRepositorio usuarioRepositorio;
+
     @Autowired
     private TicketSoporteRepositorio ticketSoporteRepositorio;
+
     @Autowired
     private PresupuestoRepositorio presupuestoRepositorio;
+
     @Autowired
     private MetaAhorroRepositorio metaAhorroRepositorio;
 
     public PanelAdministradorDTO obtenerPanel() {
-        List<UsuarioRecienteDTO> usuariosRecientes = usuarioRepositorio.findTop5ByOrderByCreadoEnDesc()
+
+        List<UsuarioRecienteDTO> usuariosRecientes = usuarioRepositorio
+                .findTop5ByOrderByCreadoEnDesc()
                 .stream()
                 .map(usuario -> new UsuarioRecienteDTO(
                         usuario.getId(),
@@ -46,44 +51,88 @@ public class ServicioAdministrador {
                 metaAhorroRepositorio.count(),
                 usuariosRecientes
         );
+
     }
 
     public List<TicketSoporteDTO> listarTickets() {
-        return ticketSoporteRepositorio.findAllByOrderByCreadoEnDesc()
+
+        return ticketSoporteRepositorio
+                .findAllByOrderByCreadoEnDesc()
                 .stream()
                 .map(this::mapearTicket)
                 .toList();
+
+    }
+
+    public TicketSoporteDTO obtenerTicket(Long idTicket) {
+
+        TicketSoporte ticketSoporte = ticketSoporteRepositorio
+                .findById(idTicket)
+                .orElseThrow(() ->
+                        new RuntimeException("No se encontró el ticket de soporte"));
+
+        return mapearTicket(ticketSoporte);
+
     }
 
     @Transactional
-    public TicketSoporteDTO responderTicket(Long idTicket, String correoAdministrador,
-                                            RespuestaTicketSoporteDTO respuestaTicketSoporteDTO) {
-        TicketSoporte ticketSoporte = ticketSoporteRepositorio.findById(idTicket)
-                .orElseThrow(() -> new RuntimeException("No se encontró el ticket de soporte"));
+    public TicketSoporteDTO responderTicket(
+            Long idTicket,
+            String correoAdministrador,
+            RespuestaTicketSoporteDTO respuestaTicketSoporteDTO) {
 
-        Usuario administrador = usuarioRepositorio.findByCorreo(correoAdministrador)
-                .orElseThrow(() -> new RuntimeException("No se encontró el usuario administrador"));
+        TicketSoporte ticketSoporte = ticketSoporteRepositorio
+                .findById(idTicket)
+                .orElseThrow(() ->
+                        new RuntimeException("No se encontró el ticket de soporte"));
 
-        ticketSoporte.setMensajeRespuesta(respuestaTicketSoporteDTO.getMensajeRespuesta());
+        Usuario administrador = usuarioRepositorio
+                .findByCorreo(correoAdministrador)
+                .orElseThrow(() ->
+                        new RuntimeException("No se encontró el usuario administrador"));
+
+        ticketSoporte.setMensajeRespuesta(
+                respuestaTicketSoporteDTO.getMensajeRespuesta());
+
         ticketSoporte.setEstado("RESPONDIDO");
+
         ticketSoporte.setRespondidoEn(LocalDateTime.now());
+
         ticketSoporte.setRespondidoPor(administrador);
+
         ticketSoporte = ticketSoporteRepositorio.save(ticketSoporte);
+
         return mapearTicket(ticketSoporte);
+
     }
 
     private TicketSoporteDTO mapearTicket(TicketSoporte ticketSoporte) {
+
         return new TicketSoporteDTO(
+
                 ticketSoporte.getId(),
+
                 ticketSoporte.getAsunto(),
+
                 ticketSoporte.getMensaje(),
+
                 ticketSoporte.getEstado(),
+
                 ticketSoporte.getMensajeRespuesta(),
+
                 ticketSoporte.getCreadoEn(),
+
                 ticketSoporte.getRespondidoEn(),
+
                 ticketSoporte.getUsuario().getId(),
+
                 ticketSoporte.getUsuario().getCorreo(),
-                ticketSoporte.getRespondidoPor() != null ? ticketSoporte.getRespondidoPor().getCorreo() : null
+
+                ticketSoporte.getRespondidoPor() != null
+                        ? ticketSoporte.getRespondidoPor().getCorreo()
+                        : null
         );
+
     }
+
 }

@@ -23,30 +23,23 @@ public class ControladorMovimiento {
 
     @GetMapping
     public ResponseEntity<?> listarMovimientos(Authentication auth) {
-   
         Usuario usuario = usuarioRepo.findByCorreo(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-
-     
         List<Movimiento> misMovimientos = movimientoRepo.findByUsuarioIdOrderByCreadoEnDesc(usuario.getId());
         return ResponseEntity.ok(misMovimientos);
     }
 
     @PostMapping
     public ResponseEntity<?> registrarMovimiento(@RequestBody Movimiento nuevoMovimiento, Authentication auth) {
-     
         if (nuevoMovimiento.getMonto() == null || nuevoMovimiento.getTipo() == null) {
             return ResponseEntity.badRequest().body("Monto y Tipo (INGRESO/EGRESO) son obligatorios.");
         }
 
-     
         Usuario usuario = usuarioRepo.findByCorreo(auth.getName())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-    
         nuevoMovimiento.setUsuario(usuario);
 
-      
         Movimiento guardado = movimientoRepo.save(nuevoMovimiento);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(guardado);

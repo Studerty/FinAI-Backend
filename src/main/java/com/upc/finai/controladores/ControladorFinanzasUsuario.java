@@ -18,14 +18,13 @@ public class ControladorFinanzasUsuario {
     @Autowired
     private ServicioFinanzasUsuario servicioFinanzasUsuario;
 
-   
+    // HU01: Resumen
     @GetMapping("/{id}/resumen")
     public ResumenFinancieroDTO obtenerResumen(@PathVariable("id") Long id) {
         System.out.println("DEBUG: Entrando a resumen para ID: " + id);
         return servicioFinanzasUsuario.obtenerResumen(id);
     }
 
- 
     @PostMapping("/{id}/movimientos")
     public MovimientoDTO crearMovimiento(@PathVariable("id") Long id,
                                          @Valid @RequestBody CrearMovimientoDTO crearMovimientoDTO) {
@@ -38,7 +37,6 @@ public class ControladorFinanzasUsuario {
         return servicioFinanzasUsuario.listarMovimientosPorTipo(id, tipo);
     }
 
- 
     @GetMapping("/{id}/presupuestos")
     public List<PresupuestoDTO> listarPresupuestos(@PathVariable("id") Long id) {
         return servicioFinanzasUsuario.listarPresupuestos(id);
@@ -50,6 +48,18 @@ public class ControladorFinanzasUsuario {
         return servicioFinanzasUsuario.crearPresupuesto(id, presupuestoDTO);
     }
 
+    @PutMapping("/presupuesto/{id}")
+    public PresupuestoDTO editarPresupuesto(@PathVariable("id") Long id,
+                                            @Valid @RequestBody PresupuestoDTO presupuestoDTO) {
+        return servicioFinanzasUsuario.editarPresupuesto(id, presupuestoDTO);
+    }
+
+    @DeleteMapping("/presupuesto/{id}")
+    public void eliminarPresupuesto(@PathVariable("id") Long id) {
+        servicioFinanzasUsuario.eliminarPresupuesto(id);
+    }
+
+    // HU03: Metas
     @PostMapping("/{id}/metas")
     public MetaAhorroDTO crearMeta(@PathVariable("id") Long id,
                                    @Valid @RequestBody MetaAhorroDTO metaAhorroDTO) {
@@ -61,7 +71,18 @@ public class ControladorFinanzasUsuario {
         return servicioFinanzasUsuario.listarMetas(id);
     }
 
-   
+    @PutMapping("/meta/{id}")
+    public MetaAhorroDTO editarMeta(@PathVariable("id") Long id,
+                                    @Valid @RequestBody MetaAhorroDTO metaAhorroDTO) {
+        return servicioFinanzasUsuario.editarMeta(id, metaAhorroDTO);
+    }
+
+    @DeleteMapping("/meta/{id}")
+    public void eliminarMeta(@PathVariable("id") Long id) {
+        servicioFinanzasUsuario.eliminarMeta(id);
+    }
+
+    // HU21: Tickets
     @PostMapping("/{id}/tickets")
     public TicketSoporteDTO crearTicket(@PathVariable("id") Long id,
                                         @Valid @RequestBody CrearTicketSoporteDTO crearTicketSoporteDTO) {

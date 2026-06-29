@@ -17,15 +17,22 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Presupuesto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String nombrePresupuesto;
 
-    @Column(nullable = false, precision = 12, scale = 2)
+    @Column(nullable = false)
     private BigDecimal montoPromedioMensual;
+
+    @Column(nullable = false)
+    private String categoria;
+
+    @Column(nullable = false)
+    private String tipo;
 
     @Column(nullable = false)
     private LocalDateTime creadoEn;

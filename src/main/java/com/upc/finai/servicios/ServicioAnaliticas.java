@@ -26,36 +26,37 @@ public class ServicioAnaliticas {
 
         ReporteFinancieroDTO reporte = new ReporteFinancieroDTO();
 
-    
+        // 1. Calculamos INGRESOS
         double ingresos = movimientos.stream()
                 .filter(m -> m.getTipo() != null && "INGRESO".equalsIgnoreCase(m.getTipo().trim()))
                 .mapToDouble(m -> m.getMonto().doubleValue()).sum();
 
-  
+        // 2. Calculamos EGRESOS
         double egresos = movimientos.stream()
-                .filter(m -> m.getTipo() != null && "EGRESO".equalsIgnoreCase(m.getTipo().trim()))
+                .filter(m -> m.getTipo() != null && "GASTO".equalsIgnoreCase(m.getTipo().trim()))
                 .mapToDouble(m -> m.getMonto().doubleValue()).sum();
 
+        // 3. IA - Gastos No Esenciales (Blindado contra mayúsculas/minúsculas y espacios)
         List<String> noEsenciales = List.of("STREAMING", "DELIVERY", "CINE", "JUEGOS", "DIVERSION", "DIVERSIÓN");
 
         double montoInnecesario = movimientos.stream()
-                .filter(m -> m.getTipo() != null && "EGRESO".equalsIgnoreCase(m.getTipo().trim()))
+                .filter(m -> m.getTipo() != null && "GASTO".equalsIgnoreCase(m.getTipo().trim()))
                 .filter(m -> m.getCategoria() != null && noEsenciales.contains(m.getCategoria().toUpperCase().trim()))
                 .mapToDouble(m -> m.getMonto().doubleValue()).sum();
 
-        
+        // 4. Llenamos el DTO
         reporte.setTotalMovimientos(movimientos.size());
         reporte.setTotalIngresos(ingresos);
         reporte.setTotalGastos(egresos);
         reporte.setAhorroNeto(ingresos - egresos);
 
-        
+        // Seteamos los valores de la "IA"
         reporte.setMontoGastosNoEsenciales(montoInnecesario);
         reporte.setAhorroPotencial(montoInnecesario * 0.8);
 
-      
+        // Agrupación para gráficos (Evitando nulls en categorías)
         Map<String, Double> porCat = movimientos.stream()
-                .filter(m -> m.getTipo() != null && "EGRESO".equalsIgnoreCase(m.getTipo().trim()))
+                .filter(m -> m.getTipo() != null && "GASTO".equalsIgnoreCase(m.getTipo().trim()))
                 .filter(m -> m.getCategoria() != null)
                 .collect(Collectors.groupingBy(
                         m -> m.getCategoria().trim(),
@@ -71,9 +72,9 @@ public class ServicioAnaliticas {
         List<Movimiento> movimientos = movimientoRepo.findByUsuarioIdOrderByCreadoEnDesc(usuario.getId());
         List<AlertaDTO> alertas = new ArrayList<>();
 
-      
+        // Alerta de Gastos Hormiga
         long gastosHormiga = movimientos.stream()
-                .filter(m -> m.getTipo() != null && "EGRESO".equalsIgnoreCase(m.getTipo().trim()))
+                .filter(m -> m.getTipo() != null && "GASTO".equalsIgnoreCase(m.getTipo().trim()))
                 .filter(m -> m.getMonto().doubleValue() < 15.0)
                 .count();
 

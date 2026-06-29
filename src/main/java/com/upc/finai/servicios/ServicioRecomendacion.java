@@ -18,6 +18,7 @@ public class ServicioRecomendacion {
     @Autowired
     private ModelMapper modelMapper;
 
+    // US04 - Recomendaciones Fiscales
     public List<RecomendacionDTO> listarRecomendacionesFiscales() {
         return articuloRecomendacionRepositorio.findByCategoriaOrderByIdAsc("FISCAL")
                 .stream()
@@ -25,6 +26,7 @@ public class ServicioRecomendacion {
                 .toList();
     }
 
+    // US08 - Recursos de Inversión (Añadido)
     public List<RecomendacionDTO> listarRecursosInversion() {
         return articuloRecomendacionRepositorio.findByCategoriaOrderByIdAsc("INVERSION")
                 .stream()

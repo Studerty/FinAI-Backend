@@ -22,5 +22,7 @@ public class CrearMovimientoDTO {
     @DecimalMin(value = "0.01", message = "El monto debe ser mayor que cero")
     private BigDecimal monto;
 
+    private String categoria;
+
     private String descripcion;
 }

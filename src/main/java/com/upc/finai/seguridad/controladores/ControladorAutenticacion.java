@@ -1,5 +1,5 @@
 package com.upc.finai.seguridad.controladores;
-
+import com.upc.finai.seguridad.dtos.RespuestaAutenticacionDTO;
 import com.upc.finai.entidades.Cuenta;
 import com.upc.finai.repositorios.CuentaRepositorio;
 import com.upc.finai.seguridad.dtos.SolicitudAutenticacionDTO;
@@ -28,20 +28,20 @@ public class ControladorAutenticacion {
     private final ServicioDetallesUsuario servicioDetallesUsuario;
     private final UsuarioRepositorio usuarioRepositorio;
     private final PasswordEncoder passwordEncoder;
-    private final CuentaRepositorio cuentaRepositorio; 
+    private final CuentaRepositorio cuentaRepositorio; // <--- AGREGADO
 
     public ControladorAutenticacion(AuthenticationManager authenticationManager,
                                     UtilJwt utilJwt,
                                     ServicioDetallesUsuario servicioDetallesUsuario,
                                     UsuarioRepositorio usuarioRepositorio,
                                     PasswordEncoder passwordEncoder,
-                                    CuentaRepositorio cuentaRepositorio) { 
+                                    CuentaRepositorio cuentaRepositorio) { // <--- AGREGADO AL CONSTRUCTOR
         this.authenticationManager = authenticationManager;
         this.utilJwt = utilJwt;
         this.servicioDetallesUsuario = servicioDetallesUsuario;
         this.usuarioRepositorio = usuarioRepositorio;
         this.passwordEncoder = passwordEncoder;
-        this.cuentaRepositorio = cuentaRepositorio; 
+        this.cuentaRepositorio = cuentaRepositorio; // <--- INYECTADO
     }
 
     @PostMapping("/registrar")
@@ -59,6 +59,7 @@ public class ControladorAutenticacion {
         usuario.setActivo(true);
         Usuario usuarioGuardado = usuarioRepositorio.save(usuario);
 
+        // 2. CREAR CUENTA AUTOMÁTICAMENTE (Esto arregla tu error 400)
         Cuenta nuevaCuenta = new Cuenta();
         nuevaCuenta.setSaldo(BigDecimal.ZERO);
         nuevaCuenta.setUsuario(usuarioGuardado);
@@ -81,6 +82,7 @@ public class ControladorAutenticacion {
         usuario.setActivo(true);
         Usuario adminGuardado = usuarioRepositorio.save(usuario);
 
+        // También le creamos cuenta al admin por si acaso
         Cuenta cuentaAdmin = new Cuenta();
         cuentaAdmin.setSaldo(BigDecimal.ZERO);
         cuentaAdmin.setUsuario(adminGuardado);
@@ -91,18 +93,43 @@ public class ControladorAutenticacion {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody SolicitudAutenticacionDTO solicitud) {
+
         try {
+
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(solicitud.getCorreo(), solicitud.getContrasena())
+                    new UsernamePasswordAuthenticationToken(
+                            solicitud.getCorreo(),
+                            solicitud.getContrasena()
+                    )
             );
+
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales inválidas");
+
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("Credenciales inválidas");
+
         }
 
-        UserDetails userDetails = servicioDetallesUsuario.loadUserByUsername(solicitud.getCorreo());
-        String token = utilJwt.generarToken(userDetails);
-        Usuario usuario = usuarioRepositorio.findByCorreo(solicitud.getCorreo()).get();
+        UserDetails userDetails =
+                servicioDetallesUsuario.loadUserByUsername(
+                        solicitud.getCorreo()
+                );
 
-        return ResponseEntity.ok("Token: " + token + " | Tu ID es: " + usuario.getId());
+        String token = utilJwt.generarToken(userDetails);
+
+        Usuario usuario =
+                usuarioRepositorio.findByCorreo(solicitud.getCorreo())
+                        .orElseThrow();
+
+        RespuestaAutenticacionDTO respuesta =
+                new RespuestaAutenticacionDTO();
+
+        respuesta.setToken(token);
+        respuesta.setIdUsuario(usuario.getId());
+        respuesta.setRol(usuario.getRol());
+        respuesta.setMensaje("Inicio de sesión exitoso");
+
+        return ResponseEntity.ok(respuesta);
+
     }
 }

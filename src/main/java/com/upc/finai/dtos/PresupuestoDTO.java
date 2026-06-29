@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PresupuestoDTO {
+
     private Long id;
 
     @NotBlank(message = "El nombre del presupuesto es obligatorio")
@@ -26,6 +27,14 @@ public class PresupuestoDTO {
     @NotNull(message = "El monto promedio mensual es obligatorio")
     @DecimalMin(value = "0.01", message = "El monto promedio mensual debe ser mayor que cero")
     private BigDecimal montoPromedioMensual;
+
+    @NotBlank(message = "La categoría es obligatoria")
+    @Size(max = 50, message = "La categoría debe tener como máximo 50 caracteres")
+    private String categoria;
+
+    @NotBlank(message = "El tipo es obligatorio")
+    @Size(max = 20, message = "El tipo debe tener como máximo 20 caracteres")
+    private String tipo;
 
     private LocalDateTime creadoEn;
 }

@@ -9,13 +9,13 @@ public class ReporteFinancieroDTO {
     private Double ahorroNeto;
     private Double montoGastosNoEsenciales;
     private Double ahorroPotencial;
-    private Map<String, Double> gastosPorCategoria; 
+    private Map<String, Double> gastosPorCategoria; // Para los gráficos de la US010
 
-  
+    // Constructor vacío obligatorio para Spring
     public ReporteFinancieroDTO() {
     }
 
-   
+    // Getters y Setters
     public Integer getTotalMovimientos() {
         return totalMovimientos;
     }

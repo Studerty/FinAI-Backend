@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/analisis")
-@PreAuthorize("hasAuthority('ROLE_USER')") 
+@PreAuthorize("hasAuthority('ROLE_USER')") // Asegúrate que coincida con tu configuración de seguridad
 public class ControladorAnalisisFinanciero {
 
     @Autowired

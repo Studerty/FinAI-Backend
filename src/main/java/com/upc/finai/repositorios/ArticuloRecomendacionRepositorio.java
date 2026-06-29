@@ -8,3 +8,4 @@ import java.util.List;
 public interface ArticuloRecomendacionRepositorio extends JpaRepository<ArticuloRecomendacion, Long> {
     List<ArticuloRecomendacion> findByCategoriaOrderByIdAsc(String categoria);
 }
+

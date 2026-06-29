@@ -19,8 +19,8 @@ INSERT INTO movimientos (id, tipo, monto, descripcion, creado_en, usuario_id) VA
 INSERT INTO movimientos (id, tipo, monto, descripcion, creado_en, usuario_id) VALUES (3, 'GASTO', 45.50, 'Almuerzo UPC', now(), 1);
 
 
-INSERT INTO presupuestos (id, nombre_presupuesto, monto_promedio_mensual, creado_en, usuario_id) VALUES (1, 'Alimentación', 600.00, now(), 1);
-INSERT INTO presupuestos (id, nombre_presupuesto, monto_promedio_mensual, creado_en, usuario_id) VALUES (2, 'Transporte', 200.00, now(), 1);
+INSERT INTO presupuestos (id, nombre_presupuesto, monto_promedio_mensual, categoria, tipo, creado_en, usuario_id) VALUES (1, 'Alimentación', 600.00, 'Alimentación', 'MENSUAL', now(), 1);
+INSERT INTO presupuestos (id, nombre_presupuesto, monto_promedio_mensual, categoria, tipo, creado_en, usuario_id) VALUES (2, 'Transporte', 200.00, 'Transporte', 'MENSUAL', now(), 1);
 
 
 INSERT INTO metas_ahorro (id, nombre_meta, monto_objetivo, monto_actual, fecha_limite, descripcion, estado, usuario_id) VALUES (1, 'Laptop Nueva', 3500.00, 500.00, current_date + 90, 'Ahorro para estudios', 'ACTIVA', 1);
